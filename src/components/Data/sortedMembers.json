@@ -460,5 +460,151 @@
         "image": "TulikaPC.jpg"
       }
     ]
+  },
+  "secondYear": {
+    "title": "2nd Year Members",
+    "members": [
+      {
+        "name": "Vipul Upadhyay",
+        "specialization": "App Development",
+        "branch": "IT",
+        "skills": [
+          "C",
+          "CPP",
+          "Python",
+          "Flutter"
+        ],
+        "github": "https://github.com/Vipul-upadhyay-12",
+        "linkedin": "https://in.linkedin.com/in/vipul-upadhyay-921b86383",
+        "email": "indihndi@gmail.com",
+        "image": "VipulPC.jpg"
+      },
+      {
+        "name": "Archit Singhal",
+        "specialization": "Competitive Programming",
+        "branch": "CS",
+        "skills": [
+          "Java"
+        ],
+        "github": "https://github.com/archit05-dev",
+        "linkedin": "https://www.linkedin.com/in/archit-singhal-4a5049389",
+        "email": "archit3775@gmail.com",
+        "image": "ArchitPC.jpeg"
+      },
+      {
+        "name": "Karnika Patel",
+        "specialization": "Competitive Programming",
+        "branch": "CSE",
+        "skills": [
+          "CPP",
+          "SQL",
+          "FastAPI"
+        ],
+        "github": "https://github.com/gitkarnika",
+        "linkedin": "https://www.linkedin.com/in/karnika-p-753354384",
+        "email": "karnika.patel6007@gmail.com",
+        "image": "KarnikaPatelPC.jpg"
+      },
+      {
+        "name": "Mayank Kumar Gupta",
+        "specialization": "Competitive Programming",
+        "branch": "CSE",
+        "skills": [
+          "Python"
+        ],
+        "github": "https://github.com/Mayank-Creater",
+        "linkedin": "https://www.linkedin.com/in/mayank-creater",
+        "email": "programmayank@gmail.com",
+        "image": "MayankPC.jpg"
+      },
+      {
+        "name": "Arshita Kasaundhan",
+        "specialization": "Web Development",
+        "branch": "IT",
+        "skills": [
+          "CPP"
+        ],
+        "github": "https://github.com/ArshitaKasaundhan",
+        "linkedin": "https://www.linkedin.com/in/tulika-mishra-29540b333",
+        "email": "arshitakasaundhan2006@gmail.com",
+        "image": "ArshitaPC.jpg"
+      },
+      {
+        "name": "Raghuraj Pratap Singh",
+        "specialization": "App Development",
+        "branch": "AIML",
+        "skills": [
+          "Python",
+          "Flutter"
+        ],
+        "github": "https://github.com/Raghuraj1",
+        "linkedin": "https://in.linkedin.com/in/raghuraj-pratap-singh-688481391",
+        "email": "singhraghuraj072@gmail.com",
+        "image": "RaghurajPC.jpg"
+      },
+      {
+        "name": "Harsh Tomar",
+        "specialization": "UI/UX Designer",
+        "branch": "CS",
+        "skills": [
+          "UI/UX Designing"
+        ],
+        "github": "https://github.com/HarshTomar43",
+        "linkedin": "https://www.linkedin.com/in/harsh-tomar-683340317",
+        "email": "tomarharsh771@gmail.com",
+        "image": "HarshTomarPC.jpg"
+      },
+      {
+        "name": "Arjun Vyas",
+        "specialization": "Android Developer",
+        "branch": "CSE",
+        "skills": [
+          "Java",
+          "Go"
+        ],
+        "github": "https://github.com/here-arjun-1",
+        "linkedin": "https://www.linkedin.com/in/arjun-vyas-100b07376",
+        "email": "arjunvyas2006@gmail.com",
+        "image": "ArjunVyasPC.jpeg"
+      },
+      {
+        "name": "Vaishnavi Jaiswal",
+        "specialization": "Competitive Programming",
+        "branch": "AIML",
+        "skills": [
+          "CPP",
+          "Go"
+        ],
+        "github": "https://github.com/vaishnaviJais2609",
+        "linkedin": "https://www.linkedin.com/in/vaishnavi-jaiswal-b594063a6",
+        "email": "vaishnavijaiswal444@gmail.com",
+        "image": "VaishnaviJaiswalPC.jpg"
+      },
+      {
+        "name": "Rakshit",
+        "specialization": "Web Development",
+        "branch": "CSE (DS)",
+        "skills": [
+          "Python",
+          "Django"
+        ],
+        "github": "https://github.com/Rakshit-dev21",
+        "linkedin": "https://www.linkedin.com/in/rakshit-rajput-5960aa3b9",
+        "email": "rajputrakshit571@gmail.com",
+        "image": "RakshitPC.jpg"
+      },
+      {
+        "name": "Aviral Umrao",
+        "specialization": "Backend Developer",
+        "branch": "CSE (DS)",
+        "skills": [
+          "Spring"
+        ],
+        "github": "https://github.com/aviralumrao",
+        "linkedin": "https://www.linkedin.com/in/aviralumrao",
+        "email": "aviral0419@gmail.com",
+        "image": "AviralUmraoPC.jpg"
+      }
+    ]
   }
 }

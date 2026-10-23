@@ -280,6 +280,7 @@ function Members() {
 const yearSections = [
   { key: "fourthYear", data: membersData.fourthYear}, 
   { key: "thirdYear", data: membersData.thirdYear },
+  { key: "secondYear", data: membersData.secondYear },
 ];
 
   return (
