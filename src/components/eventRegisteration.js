@@ -580,21 +580,68 @@ function RegistrationForm({ onSuccess }) {
     } catch (error) {
       // Reset reCAPTCHA for next attempt (tokens are single-use)
       recaptchaRef.current?.reset();
-      const fieldErrors = error.response?.data?.fieldErrors || error.response?.data?.errors;
-      const msg = error.response?.data?.message || error.response?.data?.detail || error.message || 'Something went wrong while submitting your registration. Please try again.';
+      const rawErrors = error.response?.data?.errors;
+      const backendMsg = error.response?.data?.message || error.response?.data?.detail || error.message;
+      
+      // Don't show generic "Invalid request data" when we have field errors (they're shown inline)
+      const msg = rawErrors && backendMsg?.includes('Invalid request')
+        ? 'Please fix the highlighted fields and try again.'
+        : backendMsg || 'Something went wrong while submitting your registration. Please try again.';
       setApiError(msg);
-      if (fieldErrors) {
-        // Normalize field errors similar to Form's normalizeApiFieldErrors
-        // For simplicity, we'll set them directly if they match our structure
+      
+      if (rawErrors) {
+        // Normalize backend errors: { team_name: ["msg"], leader: { phone_number: ["msg"] }, member: { student_number: ["msg"] } }
+        // into our internal format: { teamName: "msg", members: [{ phoneNumber: "msg" }, { studentNumber: "msg" }] }
+        const normalizedErrors = { members: [{}, {}] };
+        
+        // Top-level fields
+        if (rawErrors.team_name) normalizedErrors.teamName = rawErrors.team_name[0];
+        
+        // Leader errors
+        if (rawErrors.leader) {
+          Object.entries(rawErrors.leader).forEach(([field, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              // Map backend field names to our internal names
+              const fieldMap = {
+                full_name: 'fullName',
+                student_number: 'studentNumber',
+                email_id: 'emailId',
+                phone_number: 'phoneNumber',
+                hackerrank_profile: 'hackerrankProfile'
+              };
+              const internalField = fieldMap[field] || field;
+              normalizedErrors.members[0][internalField] = messages[0];
+            }
+          });
+        }
+        
+        // Member errors
+        if (rawErrors.member) {
+          Object.entries(rawErrors.member).forEach(([field, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              const fieldMap = {
+                full_name: 'fullName',
+                student_number: 'studentNumber',
+                email_id: 'emailId',
+                phone_number: 'phoneNumber',
+                hackerrank_profile: 'hackerrankProfile'
+              };
+              const internalField = fieldMap[field] || field;
+              normalizedErrors.members[1][internalField] = messages[0];
+            }
+          });
+        }
+        
         setErrors(prev => ({
           ...prev,
-          ...fieldErrors,
+          ...normalizedErrors,
           members: [
-            { ...prev.members[0], ...(fieldErrors.members?.[0] || fieldErrors.leader || {}) },
-            { ...prev.members[1], ...(fieldErrors.members?.[1] || fieldErrors.member || {}) }
+            { ...prev.members[0], ...normalizedErrors.members[0] },
+            { ...prev.members[1], ...normalizedErrors.members[1] }
           ]
         }));
-        const firstApiField = FIELD_ORDER.find(path => getFieldError(fieldErrors, path));
+        
+        const firstApiField = FIELD_ORDER.find(path => getFieldError(normalizedErrors, path));
         if (firstApiField) setTimeout(() => focusField(firstApiField), 0);
       } else {
         setTimeout(() => scrollToElement(alertRef.current), 0);
@@ -612,13 +659,54 @@ function RegistrationForm({ onSuccess }) {
       setStage('success');
       window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     } catch (error) {
-      const otpErr = error.response?.data?.errors?.otp || error.response?.data?.message;
+      const rawErrors = error.response?.data?.errors;
+      const otpErr = rawErrors?.otp?.[0] || error.response?.data?.message;
       if (otpErr) { setOtpError(otpErr); return; }
-      const fieldErrors = error.response?.data?.fieldErrors || error.response?.data?.errors;
-      if (fieldErrors) {
+      
+      if (rawErrors) {
+        // Normalize backend errors (same structure as register)
+        const normalizedErrors = { members: [{}, {}] };
+        
+        if (rawErrors.team_name) normalizedErrors.teamName = rawErrors.team_name[0];
+        
+        if (rawErrors.leader) {
+          Object.entries(rawErrors.leader).forEach(([field, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              const fieldMap = {
+                full_name: 'fullName', student_number: 'studentNumber',
+                email_id: 'emailId', phone_number: 'phoneNumber',
+                hackerrank_profile: 'hackerrankProfile'
+              };
+              const internalField = fieldMap[field] || field;
+              normalizedErrors.members[0][internalField] = messages[0];
+            }
+          });
+        }
+        
+        if (rawErrors.member) {
+          Object.entries(rawErrors.member).forEach(([field, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              const fieldMap = {
+                full_name: 'fullName', student_number: 'studentNumber',
+                email_id: 'emailId', phone_number: 'phoneNumber',
+                hackerrank_profile: 'hackerrankProfile'
+              };
+              const internalField = fieldMap[field] || field;
+              normalizedErrors.members[1][internalField] = messages[0];
+            }
+          });
+        }
+        
         setStage('form'); setOtpError(''); setApiError(error.response?.data?.message || 'Registration rejected. Please correct the highlighted fields.');
-        setErrors(prev => ({ ...prev, ...fieldErrors, members: [{ ...prev.members[0], ...(fieldErrors.members?.[0] || fieldErrors.leader || {}) }, { ...prev.members[1], ...(fieldErrors.members?.[1] || fieldErrors.member || {}) }] }));
-        const firstApiField = FIELD_ORDER.find(path => getFieldError(fieldErrors, path));
+        setErrors(prev => ({
+          ...prev,
+          ...normalizedErrors,
+          members: [
+            { ...prev.members[0], ...normalizedErrors.members[0] },
+            { ...prev.members[1], ...normalizedErrors.members[1] }
+          ]
+        }));
+        const firstApiField = FIELD_ORDER.find(path => getFieldError(normalizedErrors, path));
         if (firstApiField) setTimeout(() => focusField(firstApiField), 0);
       } else {
         setOtpError('Something went wrong while verifying your code. Please try again.');
@@ -643,7 +731,7 @@ function RegistrationForm({ onSuccess }) {
       await axios.post('https://pc.monu14.me/api/resend-otp/', { email_id: otpEmail }, { timeout: 25000 });
       setOtpError(''); return true;
     } catch (error) {
-      setOtpError(error.response?.data?.message || 'We could not send a new code. Please try again.'); return false;
+      setOtpError(error.response?.data?.message || error.response?.data?.detail || 'We could not send a new code. Please try again.'); return false;
     }
   };
 
