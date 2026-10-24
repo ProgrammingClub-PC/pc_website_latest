@@ -241,6 +241,40 @@ button:focus {
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
 }
 
+/* Register button in navbar */
+.navbar-nav .register-nav-link {
+  background: linear-gradient(135deg, #ef334c 0%, #b81432 100%);
+  border-radius: 24px;
+  padding: 0.7rem 1.1rem !important;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(239, 51, 76, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.navbar-nav .register-nav-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(239, 51, 76, 0.45);
+  color: #fff !important;
+}
+.navbar-nav .register-nav-link::after {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .navbar-nav .register-nav-link {
+    margin: 0.5rem 0 0;
+    border-radius: 12px;
+    padding: 0.7rem 1rem !important;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
 /* --------- */
 /* Home section */
 /* --------- */
