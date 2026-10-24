@@ -10,6 +10,7 @@ import {
   AiOutlineUser,
   AiOutlineRead,
 } from "react-icons/ai";
+import { FaUserPlus } from "react-icons/fa";
 
 function NavBar() {
   const [expand, updateExpanded] = useState(false);
@@ -98,17 +99,16 @@ function NavBar() {
               </Nav.Link>
             </Nav.Item>
 
-            {false && (
             <Nav.Item>
               <Nav.Link
                 as={Link}
                 to="/register"
                 onClick={() => updateExpanded(false)}
+                className="register-nav-link"
               >
-                <AiOutlineUser style={{ marginBottom: "2px" }} /> Register
+                <FaUserPlus style={{ marginBottom: "2px" }} /> Register
               </Nav.Link>
             </Nav.Item>
-            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
