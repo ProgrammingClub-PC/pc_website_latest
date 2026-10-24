@@ -94,6 +94,18 @@ button:focus {
   overflow: hidden;
   transition: top 0.3s ease, background 0.3s ease, box-shadow 0.3s ease,
     padding 0.3s ease;
+  z-index: 1030 !important;
+}
+
+/* Page content offset for fixed navbar */
+.page-content {
+  padding-top: 100px;
+}
+
+@media (max-width: 767px) {
+  .page-content {
+    padding-top: 80px;
+  }
 }
 
 .floating-navbar.scrolled {

@@ -40,16 +40,18 @@ function App() {
         <Navbar />
         <ScrollToTop />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/editorials" element={<EditorialList />} />
-          <Route path="/editorials/:slug" element={<EditorialDetail />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/register" element={<EventRegisteration />} />
+        <main className="page-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/editorials" element={<EditorialList />} />
+            <Route path="/editorials/:slug" element={<EditorialDetail />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/register" element={<EventRegisteration />} />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
 
         <Footer />
       </div>
