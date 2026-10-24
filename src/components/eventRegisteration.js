@@ -434,7 +434,7 @@ function SuccessState({ registration, onReset }) {
       <div className="success-icon" aria-hidden="true"><FaCheckCircle size={38} /></div>
       <p className="success-eyebrow">Team registration received</p>
       <h1 id="success-heading" ref={headingRef} tabIndex={-1} className="success-title">Your team is in!</h1>
-      <p className="success-lead"><strong>{registration.teamName}</strong> is registered for CONTEST 1.0. Both members are on the list.</p>
+      <p className="success-lead"><strong>{registration.teamName}</strong> is registered for CodeCrush. Both members are on the list.</p>
       <div className="success-summary">
         <div className="summary-row"><span>Team</span><strong>{registration.teamName}</strong></div>
         {registration.members.map((member, index) => (
@@ -748,7 +748,7 @@ function RegistrationForm({ onSuccess }) {
     <div className="form-card closed-state" style={{animation: 'fadeIn 0.3s ease-out'}}>
       <FaLock size={48} aria-hidden="true" className="closed-icon" />
       <h2>Registrations are closed</h2>
-      <p>CONTEST 1.0 registration is not currently open.</p>
+      <p>CodeCrush registration is not currently open.</p>
     </div>
   );
 
@@ -760,7 +760,7 @@ function RegistrationForm({ onSuccess }) {
     <>
       <section className="hero" style={{animation: 'fadeInUp 0.5s ease-out'}}>
         <div className="hero-eyebrow"><span className="status-dot" aria-hidden="true" /> Team Registrations Open</div>
-        <h1 className="hero-title">Contest <span className="accent">1.0</span> <span className="hero-title-sub">Registration</span></h1>
+        <h1 className="hero-title">Code<span className="accent">Crush</span> <span className="hero-title-sub">Registration</span></h1>
         <p className="hero-subtitle">Organised by <strong>Programming Club</strong>, AKGEC</p>
         <div className="hero-divider" aria-hidden="true">
           <span className="divider-line" />
