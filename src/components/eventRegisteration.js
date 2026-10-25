@@ -18,8 +18,9 @@ const branchCodes = {
   CSE: "10", CE: "0",
 };
 
-const GOOGLE_SITE_KEY = "6LfVtvwtAAAAAGe3GvBmiyd02TbwpEgevkbOBQHX";
-const BACKEND_URL = "https://pc.monu14.me/api/register/";
+const GOOGLE_SITE_KEY = process.env.REACT_APP_GOOGLE_SITE_KEY;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const BACKEND_URL = `${API_BASE_URL}/api/register/`;
 
 const MEMBER_FIELDS = [
   'fullName', 'studentNumber', 'emailId', 'phoneNumber',
@@ -475,7 +476,7 @@ function RegistrationForm({ onSuccess }) {
   // Check registration status on mount
   useEffect(() => {
     let cancelled = false;
-    axios.get('https://pc.monu14.me/api/status/')
+    axios.get(`${API_BASE_URL}/api/status/`)
       .then(res => { if (!cancelled) { setRegistrationsOpen(res.data.registration_open); setStatusChecked(true); } })
       .catch(err => { if (!cancelled) { setApiError(err.message || 'Could not check registration status. Please refresh the page.'); setStatusChecked(true); } });
     return () => { cancelled = true; };
@@ -653,7 +654,7 @@ function RegistrationForm({ onSuccess }) {
     if (submittingRef.current) return;
     setOtpError(''); submittingRef.current = true; setIsSubmitting(true);
     try {
-      const res = await axios.post('https://pc.monu14.me/api/verify/', { email_id: otpEmail, otp: code }, { timeout: 25000 });
+      const res = await axios.post(`${API_BASE_URL}/api/verify/`, { email_id: otpEmail, otp: code }, { timeout: 25000 });
       const registration = { teamName: res.data.team_name || values.teamName, members: [toSubmittedMember(values.members[0]), toSubmittedMember(values.members[1])] };
       setSubmittedRegistration(registration);
       setStage('success');
@@ -728,7 +729,7 @@ function RegistrationForm({ onSuccess }) {
 
   const handleOtpResend = async () => {
     try {
-      await axios.post('https://pc.monu14.me/api/resend-otp/', { email_id: otpEmail }, { timeout: 25000 });
+      await axios.post(`${API_BASE_URL}/api/resend-otp/`, { email_id: otpEmail }, { timeout: 25000 });
       setOtpError(''); return true;
     } catch (error) {
       setOtpError(error.response?.data?.message || error.response?.data?.detail || 'We could not send a new code. Please try again.'); return false;

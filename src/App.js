@@ -40,7 +40,7 @@ function App() {
         <Navbar />
         <ScrollToTop />
 
-        <main className="page-content">
+        {/* <main className="page-content"> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -51,7 +51,7 @@ function App() {
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </main>
+        {/* </main> */}
 
         <Footer />
       </div>
