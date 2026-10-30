@@ -99,7 +99,7 @@ function NavBar() {
               </Nav.Link>
             </Nav.Item>
 
-            <Nav.Item>
+            {/* <Nav.Item>
               <Nav.Link
                 as={Link}
                 to="/register"
@@ -108,7 +108,7 @@ function NavBar() {
               >
                 <FaUserPlus style={{ marginBottom: "2px" }} /> Register
               </Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
           </Nav>
         </Navbar.Collapse>
       </Container>
