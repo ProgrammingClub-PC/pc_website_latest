@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { fetchEditorialBySlug, getPlatformLabel } from "../../api/editorials";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -75,6 +75,10 @@ const CodeBlock = ({ node, inline, className, children, ...props }) => {
 
 function EditorialDetail() {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const backToList = `/editorials${
+    searchParams.toString() ? `?${searchParams.toString()}` : ""
+  }`;
   const [editorial, setEditorial] = useState(null);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
@@ -114,7 +118,7 @@ function EditorialDetail() {
     <section className="editorials-page">
       <Container fluid className="editorials-hero">
         <Container className="editorials-shell editorial-detail-shell">
-          <Link className="editorials-back-link" to="/editorials">
+          <Link className="editorials-back-link" to={backToList}>
             ← Back to all editorials
           </Link>
 

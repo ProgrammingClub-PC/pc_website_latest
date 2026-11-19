@@ -12,23 +12,36 @@ async function parseResponse(response) {
   return response.json();
 }
 
-function normalizeCollection(payload) {
+function normalizePage(payload) {
   if (Array.isArray(payload)) {
     return {
       items: payload,
+      count: payload.length,
       next: null,
+      previous: null,
     };
   }
 
   return {
     items: payload?.results || [],
+    count: typeof payload?.count === "number" ? payload.count : null,
     next: payload?.next || null,
+    previous: payload?.previous || null,
   };
 }
 
 async function fetchJson(url) {
   const response = await fetch(url);
   return parseResponse(response);
+}
+
+export async function fetchEditorialsPage(urlOrPage) {
+  const url =
+    typeof urlOrPage === "number"
+      ? getEndpoint(`/editorials/?page=${urlOrPage}`)
+      : urlOrPage || getEndpoint("/editorials/");
+  const payload = await fetchJson(url);
+  return normalizePage(payload);
 }
 
 export async function fetchAllEditorials() {
@@ -38,7 +51,7 @@ export async function fetchAllEditorials() {
 
   while (nextUrl && pageCount < 50) {
     const payload = await fetchJson(nextUrl);
-    const { items, next } = normalizeCollection(payload);
+    const { items, next } = normalizePage(payload);
 
     collected.push(...items);
     nextUrl = next;
