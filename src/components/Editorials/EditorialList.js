@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { fetchAllEditorials, getPlatformLabel } from "../../api/editorials";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { fetchEditorialsPage, getPlatformLabel } from "../../api/editorials";
 import "./Editorials.css";
 
 function formatDate(value) {
@@ -28,8 +28,31 @@ function getContestDateLabel(editorial) {
   return formatDate(editorial?.created_at);
 }
 
+function getPageNumberFromUrl(url) {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const page = Number(
+      new URL(url, window.location.origin).searchParams.get("page")
+    );
+    return Number.isInteger(page) && page > 0 ? page : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function getPageFromSearchParams(searchParams) {
+  const page = Number(searchParams.get("page"));
+  return Number.isInteger(page) && page > 0 ? page : 1;
+}
+
 function EditorialList() {
-  const [editorials, setEditorials] = useState([]);
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = getPageFromSearchParams(searchParams);
+  const [pageData, setPageData] = useState(null);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
 
@@ -39,13 +62,14 @@ function EditorialList() {
     async function loadEditorials() {
       try {
         setStatus("loading");
-        const data = await fetchAllEditorials();
+        const data = await fetchEditorialsPage(page);
 
         if (!isMounted) {
           return;
         }
 
-        setEditorials(data);
+        setPageData(data);
+        setError("");
         setStatus("success");
       } catch (fetchError) {
         if (!isMounted) {
@@ -62,7 +86,18 @@ function EditorialList() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [page]);
+
+  const editorials = pageData?.items || [];
+  const isLoading = status === "loading";
+
+  function goToPage(url) {
+    const pageNumber = getPageNumberFromUrl(url);
+
+    if (pageNumber) {
+      setSearchParams(pageNumber > 1 ? { page: String(pageNumber) } : {});
+    }
+  }
 
   return (
     <section className="editorials-page">
@@ -77,7 +112,7 @@ function EditorialList() {
             </p>
           </div>
 
-          {status === "loading" && (
+          {isLoading && !pageData && (
             <div className="editorials-feedback-card">
               Loading editorials...
             </div>
@@ -93,38 +128,70 @@ function EditorialList() {
             </div>
           )}
 
-          {status === "success" && editorials.length > 0 && (
-            <div className="editorial-grid">
-              {editorials.map((editorial) => (
-                <Link
-                  key={editorial.id || editorial.slug}
-                  className="editorial-card"
-                  to={`/editorials/${editorial.slug}`}
+          {editorials.length > 0 && (
+            <>
+              <div className="editorial-grid">
+                {editorials.map((editorial) => (
+                  <Link
+                    key={editorial.id || editorial.slug}
+                    className="editorial-card"
+                    to={`/editorials/${editorial.slug}${location.search}`}
+                  >
+                    <div className="editorial-card-topline">
+                      <span className="editorial-platform">
+                        {getPlatformLabel(editorial.platform)}
+                      </span>
+                      <span className="editorial-date">
+                        {getContestDateLabel(editorial)}
+                      </span>
+                    </div>
+
+                    <h2>{editorial.contest_name}</h2>
+
+                    <p>
+                      {editorial.questions?.length || 0} question
+                      {(editorial.questions?.length || 0) === 1 ? "" : "s"} in
+                      this editorial.
+                    </p>
+
+                    <div className="editorial-card-footer">
+                      <span>Open editorial</span>
+                      <span className="editorial-arrow">→</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <nav className="editorial-pagination" aria-label="Editorial pages">
+                <button
+                  type="button"
+                  className="editorial-page-btn"
+                  onClick={() => goToPage(pageData.previous)}
+                  disabled={!pageData.previous || isLoading}
                 >
-                  <div className="editorial-card-topline">
-                    <span className="editorial-platform">
-                      {getPlatformLabel(editorial.platform)}
-                    </span>
-                    <span className="editorial-date">
-                      {getContestDateLabel(editorial)}
-                    </span>
-                  </div>
+                  ← Previous
+                </button>
 
-                  <h2>{editorial.contest_name}</h2>
+                <span className="editorial-page-status">
+                  {isLoading
+                    ? "Loading..."
+                    : `Page ${page}${
+                        typeof pageData.count === "number"
+                          ? ` · ${pageData.count} editorials`
+                          : ""
+                      }`}
+                </span>
 
-                  <p>
-                    {editorial.questions?.length || 0} question
-                    {(editorial.questions?.length || 0) === 1 ? "" : "s"} in
-                    this editorial.
-                  </p>
-
-                  <div className="editorial-card-footer">
-                    <span>Open editorial</span>
-                    <span className="editorial-arrow">→</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                <button
+                  type="button"
+                  className="editorial-page-btn"
+                  onClick={() => goToPage(pageData.next)}
+                  disabled={!pageData.next || isLoading}
+                >
+                  Next →
+                </button>
+              </nav>
+            </>
           )}
         </Container>
       </Container>
