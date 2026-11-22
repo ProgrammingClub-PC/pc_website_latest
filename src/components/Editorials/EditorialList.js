@@ -28,7 +28,7 @@ function getContestDateLabel(editorial) {
   return formatDate(editorial?.created_at);
 }
 
-function getPageNumberFromUrl(url) {
+function getPageNumberFromUrl(url, fallbackPage) {
   if (!url) {
     return null;
   }
@@ -37,15 +37,27 @@ function getPageNumberFromUrl(url) {
     const page = Number(
       new URL(url, window.location.origin).searchParams.get("page")
     );
-    return Number.isInteger(page) && page > 0 ? page : null;
+    return Number.isInteger(page) && page > 0 ? page : fallbackPage;
   } catch (error) {
-    return null;
+    return fallbackPage;
   }
 }
 
 function getPageFromSearchParams(searchParams) {
   const page = Number(searchParams.get("page"));
   return Number.isInteger(page) && page > 0 ? page : 1;
+}
+
+function getTotalPages(pageData, currentPage) {
+  if (!pageData || typeof pageData.count !== "number") {
+    return null;
+  }
+
+  if (pageData.next && pageData.items.length > 0) {
+    return Math.ceil(pageData.count / pageData.items.length);
+  }
+
+  return currentPage;
 }
 
 function EditorialList() {
@@ -90,9 +102,10 @@ function EditorialList() {
 
   const editorials = pageData?.items || [];
   const isLoading = status === "loading";
+  const totalPages = getTotalPages(pageData, page);
 
-  function goToPage(url) {
-    const pageNumber = getPageNumberFromUrl(url);
+  function goToPage(url, fallbackPage) {
+    const pageNumber = getPageNumberFromUrl(url, fallbackPage);
 
     if (pageNumber) {
       setSearchParams(pageNumber > 1 ? { page: String(pageNumber) } : {});
@@ -166,7 +179,7 @@ function EditorialList() {
                 <button
                   type="button"
                   className="editorial-page-btn"
-                  onClick={() => goToPage(pageData.previous)}
+                  onClick={() => goToPage(pageData.previous, page - 1)}
                   disabled={!pageData.previous || isLoading}
                 >
                   ← Previous
@@ -176,16 +189,14 @@ function EditorialList() {
                   {isLoading
                     ? "Loading..."
                     : `Page ${page}${
-                        typeof pageData.count === "number"
-                          ? ` · ${pageData.count} editorials`
-                          : ""
+                        totalPages !== null ? ` of ${totalPages}` : ""
                       }`}
                 </span>
 
                 <button
                   type="button"
                   className="editorial-page-btn"
-                  onClick={() => goToPage(pageData.next)}
+                  onClick={() => goToPage(pageData.next, page + 1)}
                   disabled={!pageData.next || isLoading}
                 >
                   Next →
